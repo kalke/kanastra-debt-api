@@ -17,4 +17,4 @@ class Debt(config.Base):
     debt_due_date = Column(Date, nullable=False)
     file_upload_id = Column(Integer, ForeignKey('file_upload.id'))
 
-    file_upload = relationship("FileUpload")
+    file_upload = relationship('FileUpload')
