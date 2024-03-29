@@ -11,7 +11,7 @@ def test_rename_columns():
         'debtAmount': [1000.50, 2000.75],
         'debtDueDate': [date(2023, 1, 1), date(2023, 12, 31)],
         'debtId': ['debt1', 'debt2']
-    }   
+    }
 
     df = pl.DataFrame(mock_data)
 
@@ -22,4 +22,3 @@ def test_rename_columns():
     assert "debt_amount" in renamed_df.columns
     assert "debt_due_date" in renamed_df.columns
     assert "id" in renamed_df.columns
-    

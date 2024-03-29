@@ -18,4 +18,3 @@ async def test_upload_file_integration():
         response = await ac.post("/files/upload", files=files)
 
         assert response.status_code == 200
-

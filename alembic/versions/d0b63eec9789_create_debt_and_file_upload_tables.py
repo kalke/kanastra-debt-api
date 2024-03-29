@@ -1,7 +1,7 @@
 """Create debt and file_upload tables
 
 Revision ID: d0b63eec9789
-Revises: 
+Revises:
 Create Date: 2024-03-28 23:40:22.770367
 
 """
