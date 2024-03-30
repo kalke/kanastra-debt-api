@@ -99,4 +99,8 @@ If you follow all the steps correctly you can run the api with:
 uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
-The documentation is avaiable in: <http://localhost:8000/docs#/>
+The documentation is avaiable in:
+
+```bash
+xdg-open http://localhost:8000/docs# > /dev/null
+```
