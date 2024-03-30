@@ -1,7 +1,13 @@
+from enum import Enum
 from typing import Optional, List
 from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict
+
+class UploadStatus(str, Enum):
+    UPLOADING = 'UPLOADING'
+    FAILED = 'FAILED'
+    SUCCESS = 'SUCCESS'
 
 
 class FileUploadSchema(BaseModel):
@@ -10,7 +16,8 @@ class FileUploadSchema(BaseModel):
     file_name: str
     row_count: int
     created_at: Optional[datetime] = None
-    time_to_process: float
+    upload_status: UploadStatus
+    time_to_process: Optional[float] = None
 
 
 class PaginatedFileResponse(BaseModel):

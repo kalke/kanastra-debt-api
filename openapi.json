@@ -1,0 +1,236 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Kanastra Debt API",
+    "version": "1.0.0",
+    "description": "API for managing file uploads and processing debts related to those files."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/files/list": {
+      "get": {
+        "tags": ["Files"],
+        "summary": "List all uploaded files",
+        "description": "Retrieve a paginated list of files that have been uploaded.",
+        "operationId": "listFiles",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Specifies the page number of the files list.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "items_per_page",
+            "in": "query",
+            "description": "Specifies the number of files to return per page.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of files",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error occurred"
+          }
+        }
+      }
+    },
+    "/files/upload": {
+      "post": {
+        "tags": ["Files"],
+        "summary": "Upload File to the Database",
+        "operationId": "uploadFile",
+        "requestBody": {
+          "description": "CSV file to upload.",
+          "content": {
+            "text/csv": {
+              "schema": {
+                "type": "string",
+                "format": "binary",
+                "description": "A CSV file that is being uploaded."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "File has been uploaded successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileUploadResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error occurred"
+          }
+        }
+      }
+    },
+    "/process/debts": {
+      "get": {
+        "tags": ["Processing"],
+        "summary": "Process debts for a specific file",
+        "description": "Processes debts associated with a given file ID and sends notification emails for any overdue debts.",
+        "operationId": "processDebts",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "query",
+            "description": "The identifier of the file for which to process debts.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Debts have been processed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DebtProcessResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error occurred."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PaginatedFileResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileUploadSchema"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "items_per_page": {
+            "type": "integer"
+          },
+          "total_items": {
+            "type": "integer"
+          },
+          "total_pages": {
+            "type": "integer"
+          }
+        },
+        "required": ["data", "page", "items_per_page", "total_items", "total_pages"]
+      },
+      "FileUploadRequest": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "description": "The file to be uploaded."
+          }
+        },
+        "required": ["file"]
+      },
+      "FileUploadSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "nullable": true
+          },
+          "file_name": {
+            "type": "string"
+          },
+          "row_count": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "upload_status": {
+            "$ref": "#/components/schemas/UploadStatus"
+          },
+          "time_to_process": {
+            "type": "number",
+            "nullable": true
+          }
+        },
+        "required": ["file_name", "row_count", "upload_status"]
+      },
+      "UploadStatus": {
+        "type": "string",
+        "enum": ["UPLOADING", "FAILED", "SUCCESS"],
+        "description": "The status of the file upload process."
+      },
+      "FileUploadResponse": {
+        "type": "object",
+        "properties": {
+          "filename": {
+            "type": "string",
+            "description": "The name of the file that was uploaded."
+          },
+          "rows": {
+            "type": "integer",
+            "description": "The number of rows in the uploaded file."
+          },
+          "log_id": {
+            "type": "integer",
+            "description": "The identifier of the log entry associated with this file upload."
+          },
+          "total_time_to_add": {
+            "type": "number",
+            "description": "The total time taken to process and add the file contents to the database."
+          }
+        },
+        "required": ["filename", "rows", "log_id", "total_time_to_add"]
+      },
+      "DebtProcessResponse": {
+        "type": "object",
+        "properties": {
+          "total_sent_emails": {
+            "type": "integer",
+            "description": "The total number of emails sent to notify about the overdue debts."
+          }
+        },
+        "required": ["total_sent_emails"]
+      }
+    }
+  }
+}

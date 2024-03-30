@@ -7,7 +7,7 @@ def rename_columns(df: pl.DataFrame) -> pl.DataFrame:
         'email': 'email',
         'debtAmount': 'debt_amount',
         'debtDueDate': 'debt_due_date',
-        'debtId': 'id'
+        'debtId': 'debt_id'
     }
 
     for old_name, new_name in column_mapping.items():

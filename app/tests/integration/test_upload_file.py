@@ -9,12 +9,14 @@ from httpx import AsyncClient, ASGITransport
 
 from app.main import app
 from app.dependencies import get_db
-from app.tests.test_dependencies import override_get_db
+from app.tests.test_dependencies import override_get_db, create_all_tables
+
 
 app.dependency_overrides[get_db] = override_get_db
 
 @pytest.mark.asyncio
 async def test_upload_file():
+    await create_all_tables()
 
     df = pl.DataFrame({
         'name': ['henrique', 'kanastra'],

@@ -22,4 +22,4 @@ def test_rename_columns():
     assert 'email' in renamed_df.columns
     assert 'debt_amount' in renamed_df.columns
     assert 'debt_due_date' in renamed_df.columns
-    assert 'id' in renamed_df.columns
+    assert 'debt_id' in renamed_df.columns
