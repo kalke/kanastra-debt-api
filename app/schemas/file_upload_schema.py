@@ -10,6 +10,7 @@ class FileUploadSchema(BaseModel):
     file_name: str
     row_count: int
     created_at: Optional[datetime] = None
+    time_to_process: float
 
 
 class PaginatedFileResponse(BaseModel):

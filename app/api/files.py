@@ -56,5 +56,7 @@ async def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db
         session.commit()
 
         total_time = end_time - start_time
+        file_log.time_to_process = total_time
+        session.commit()
 
         return {'filename': file.filename, 'rows': len(df), 'log_id': file_log.id , 'total_time_to_add': total_time}
